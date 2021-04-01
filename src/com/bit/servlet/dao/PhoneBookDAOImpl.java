@@ -184,6 +184,16 @@ public class PhoneBookDAOImpl implements PhoneBookDAO {
 		}
 		return phoneBookList;
 	}
+
+	@Override
+	public int delete(Long no) {
+		return 0;
+	}
+
+	@Override
+	public int insert(PhoneBook vo) {
+		return 0;
+	}
 }
 
 

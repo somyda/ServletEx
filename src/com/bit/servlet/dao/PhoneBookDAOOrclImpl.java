@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PhoneBookDAOOrclImpl implements PhoneBookDAO {
@@ -15,7 +16,7 @@ public class PhoneBookDAOOrclImpl implements PhoneBookDAO {
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
+
 			String dburl = "jdbc:oracle:thin:@localhost:1521:xe";
 			conn = DriverManager.getConnection(dburl, "HR", "1234");
 		} catch (ClassNotFoundException e) {
@@ -38,16 +39,16 @@ public class PhoneBookDAOOrclImpl implements PhoneBookDAO {
 			conn = getConnection();
 			stmt = conn.createStatement();
 			String sql = "SELECT id, name, hp, tel, creat_at " +
-								FROM emaillist ORDER BY create_at DESC";"
+								"FROM emaillist ORDER BY create_at DESC" ;
 			rs = stmt.executeQuery(sql);
 			
 			while (rs.next()) {
-				Long no = rs.getLong(1);
-				String firstName = rs.getString(2);
-				String lastName = rs.getString(4);
-				Date creatAt = rs.getDate(5);
+				Integer id = rs.getInt(1);
+				String name = rs.getString(2);
+				Integer hp = rs.getInt(3);
+				Integer tel = rs.getInt(4);
 				
-				EmailVo vo = new EmailVo(no, lastName, firstName, email, creatAt);
+				PhoneBook vo = new PhoneBook();
 				list.add(vo);
 			}
 		} catch (SQLException e) {
@@ -62,22 +63,20 @@ public class PhoneBookDAOOrclImpl implements PhoneBookDAO {
 		return list;
 	}
 	
-	@Override
-	public int insert(EmailVo vo) {
+
+	public int insert(PhoneBook vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int insertedCount = 0;
 		
 		try {
 			conn = getConnection();
-			String sql = "INSERT INTO emaillist" +
-							"(no, last_name, first_name, email) " +
-							"VALUES(seq_emaillist_pk.NEXTVAL, ?, ?, ?)";
+			String sql = "INSERT INTO phonebooklist" +
+							"(id, name, hp, tel) " +
+							"VALUES(seq_phonebooklist_pk.NEXTVAL, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1,  vo.getLastName());
-			pstmt.setString(2,  vo.getFirstName());
-			pstmt.setString(3,  vo.getEmail());
+			pstmt.setString(1,  vo.getName());
 			
 			insertedCount = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -93,7 +92,6 @@ public class PhoneBookDAOOrclImpl implements PhoneBookDAO {
 		return insertedCount;
 	}
 	
-	@Override
 	public int delete(Long no) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

@@ -59,5 +59,9 @@ public class PhoneBook {
 	public String toString() {
 		return "Phonelnfo [name=" + name + ", hp+" + hp + ", tel+" + tel + "]";
 	}
+
+	public void setId(String id2) {
+		
+	}
 	
 }

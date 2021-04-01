@@ -7,4 +7,7 @@ public interface PhoneBookDAO {
 	int addPhone(PhoneBook phoneBook);
 	int deletePhone(int deleteId);
 	List<PhoneBook> getSearch(String keyword);
+	int delete(Long no);
+	int insert(PhoneBook vo);
+	
 }
