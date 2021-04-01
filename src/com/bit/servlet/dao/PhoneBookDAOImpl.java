@@ -10,13 +10,30 @@ import java.util.List;
 
 public class PhoneBookDAOImpl implements PhoneBookDAO {
 	
-	private String dburl = "jdbc:oracle:thin:@localhost:1521:xe";
-	private String userName = "hr";
-	private String password = "1234";
-	
-	public PhoneBookDAOImpl() {
+	private Connection getConnection() throws SQLException {
+		String dburl = "jdbc:oracle:thin:@localhost:1521:xe";
+		String userName = "hr";
+		String password = "1234";
 		
+		Connection conn = null;
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(dburl, userName, password);
+		} catch (ClassNotFoundException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return conn;
 	}
+
+	/*
+	List<PhoneBook> getList();
+	int insert(PhoneBook phoneBook);
+	int delete(int deleteId);
+	List<PhoneBook> getSearch(String keyword);
+    */
 	
 	public List<PhoneBook> getList() {
 		List<PhoneBook> phoneBookList = new ArrayList<PhoneBook>();
@@ -24,7 +41,7 @@ public class PhoneBookDAOImpl implements PhoneBookDAO {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			conn = DriverManager.getConnection(dburl, userName, password);
+			conn = getConnection();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT id, name, hp, tel FROM PHONE_BOOK");
 			while (rs.next()) {
@@ -67,15 +84,15 @@ public class PhoneBookDAOImpl implements PhoneBookDAO {
 		return phoneBookList;
 	}
 	
-	public int addPhone(PhoneBook phoneBook) {
-		int updateCount = 0;
+	public int insert(PhoneBook phoneBook) {
+		int insertCount = 0;
 		Connection conn = null;
 		Statement stmt = null;
 		
 		try {
-			conn = DriverManager.getConnection(dburl, userName, password);
+			conn = getConnection();
 			stmt = conn.createStatement();
-			updateCount = stmt.executeUpdate("INSERT INTO PHONE_BOOK(id, name, hp, tel) VALUES(SEQ_PHONE_BOOK.NEXTVAL, '"
+			insertCount = stmt.executeUpdate("INSERT INTO PHONE_BOOK(id, name, hp, tel) VALUES(SEQ_PHONE_BOOK.NEXTVAL, '"
 									+ phoneBook.getName() + "', '"
 									+ phoneBook.getHp() + "', '"
 									+ phoneBook.getTel() + "')");
@@ -99,18 +116,18 @@ public class PhoneBookDAOImpl implements PhoneBookDAO {
 				conn = null;
 			}
 		}
-		return updateCount;
+		return insertCount;
 	}
 	
-	public int deletePhone(int deleteId) {
+	public int delete(Integer id) {
 		int deleteCount = 0;
 		Connection conn = null;
 		Statement stmt = null;
 		
 		try {
-			conn = DriverManager.getConnection(dburl, userName, password);
+			conn = getConnection();
 			stmt = conn.createStatement();
-			deleteCount = stmt.executeUpdate("DELETE FROM PHONE_BOOK WHERE id = " + deleteId);
+			deleteCount = stmt.executeUpdate("DELETE FROM PHONE_BOOK WHERE id = " + id);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -142,7 +159,7 @@ public class PhoneBookDAOImpl implements PhoneBookDAO {
 		ResultSet rs = null;
 		
 		try {
-			conn = DriverManager.getConnection(dburl, userName, password);
+			conn = getConnection();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT id, name, hp, tel FROM PHONE_BOOK WHERE name like '" + keyword + "%'");
 			while (rs.next()) {
@@ -185,15 +202,6 @@ public class PhoneBookDAOImpl implements PhoneBookDAO {
 		return phoneBookList;
 	}
 
-	@Override
-	public int delete(Long no) {
-		return 0;
-	}
-
-	@Override
-	public int insert(PhoneBook vo) {
-		return 0;
-	}
 }
 
 

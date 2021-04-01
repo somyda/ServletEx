@@ -19,7 +19,7 @@ public class PhoneBook {
 		this.tel = tel;
 	}
 	
-	public PhoneBook(Integer id, String neme, String hp, String tel) {
+	public PhoneBook(Integer id, String name, String hp, String tel) {
 		super();
 		this.id = id;
 		this.name = name;
